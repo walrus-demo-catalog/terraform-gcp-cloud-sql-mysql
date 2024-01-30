@@ -65,6 +65,7 @@ locals {
     "5.6" = "MYSQL_5_6"
   }, var.engine_version, "MYSQL_8_0")
 
+  allowed_networks = ["0.0.0.0/32"]
   publicly_accessible = try(var.infrastructure.publicly_accessible, false)
 }
 
@@ -73,6 +74,7 @@ locals {
 resource "google_sql_database_instance" "instance" {
   name             = local.fullname
   database_version = local.version
+  region           = "asia-northeast1"
 
   settings {
     tier      = var.resources.class
@@ -81,6 +83,16 @@ resource "google_sql_database_instance" "instance" {
 
     ip_configuration {
       ipv4_enabled = local.publicly_accessible == true ? true : false
+
+      dynamic "authorized_networks" {
+        for_each = local.allowed_networks
+        iterator = allowed_networks
+
+        content {
+          name  = "allowed_networks"
+          value = allowed_networks.value
+        }
+      }
     }
   }
 
