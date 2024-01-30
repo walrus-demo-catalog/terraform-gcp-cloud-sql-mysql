@@ -65,7 +65,7 @@ locals {
     "5.6" = "MYSQL_5_6"
   }, var.engine_version, "MYSQL_8_0")
 
-  allowed_networks = ["0.0.0.0/32"]
+  allowed_networks = ["0.0.0.0/0"]
   publicly_accessible = try(var.infrastructure.publicly_accessible, false)
 }
 
